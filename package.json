@@ -1,0 +1,12 @@
+{
+  "name": "sms-backup-viewer",
+  "version": "0.0.1",
+  "description": "View backups from SMS Backup and Restore",
+  "repository": {
+		  "type": "git"
+		, "url": "https://github.com/davisben/sms-backup-viewer"
+	},
+  "main": "app.js",
+  "author": "Ben Davis",
+  "license": "GPL-3.0"
+}
