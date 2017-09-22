@@ -1,7 +1,10 @@
 <template lang="pug">
   div#messages
     div.message(v-for="message in loadedMessages"
-      v-bind:class="message.type == 1 ? 'received' : 'sent'") {{ message.body }}
+      :class="message.type == 1 ? 'received' : 'sent'")
+
+      img(v-for="image in message.images", :src="image")
+      div.body {{ message.body }}
 </template>
 
 <script>
@@ -30,4 +33,7 @@ export default {
     &.sent
       float: right
       background: $sent
+
+    img
+      max-width: 100%
 </style>

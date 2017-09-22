@@ -33,8 +33,14 @@ export default {
           var contacts = []
           var messages = []
 
+          var imageMimeTypes = [
+            'image/jpeg',
+            'image/jpg',
+            'image/png',
+            'image/gif'
+          ]
+
           _.forEach(result.smses.sms, function (sms) {
-            console.log(sms)
             var address = sms.$.address
             var index = _.findIndex(contacts, ['address', address])
 
@@ -56,6 +62,35 @@ export default {
               body: sms.$.body
             }
             messages.push(message)
+          })
+
+          _.forEach(result.smses.mms, function (mms) {
+            if (!_.isEmpty(mms.parts)) {
+              _.forEach(mms.parts, function (part) {
+                if (!_.isEmpty(part)) {
+                  var images = []
+                  var body
+
+                  _.forEach(part.part, function (part) {
+                    if (_.indexOf(imageMimeTypes, part.$.ct) >= 0) {
+                      var src = 'data:' + part.$.ct + ';base64, ' + part.$.data
+                      images.push(src)
+                    } else if (part.$.ct === 'text/plain') {
+                      body = part.$.text
+                    }
+                  })
+
+                  var message = {
+                    address: mms.$.address,
+                    date: mms.$.date,
+                    type: 1,
+                    body: body,
+                    images: images
+                  }
+                  messages.push(message)
+                }
+              })
+            }
           })
 
           app.contacts = contacts

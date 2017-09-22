@@ -1,8 +1,8 @@
 <template lang="pug">
   div#contacts
     div.contact(v-for="contact in contacts"
-      v-on:click="contactClick(contact.address, $event)"
-      v-bind:class="{ active: active == contact.address}")
+      @click="contactClick(contact.address, $event)"
+      :class="{ active: active == contact.address}")
       div.name {{ contact.name }}
       div.message-count {{ contact.count }} {{ contact.count | pluralize('message') }}
 </template>
