@@ -8,6 +8,8 @@
 </template>
 
 <script>
+import _ from 'lodash'
+
 export default {
   name: 'contact',
   store: ['contacts', 'messages', 'loadedMessages'],
@@ -15,9 +17,11 @@ export default {
     contactClick: function (address, e) {
       this.active = address
 
-      this.loadedMessages = this.messages.filter(function (message) {
+      var filtered = this.messages.filter(function (message) {
         return message.address === this.toString()
       }, address)
+
+      this.loadedMessages = _.sortBy(filtered, ['date'])
     }
   },
   data () {
