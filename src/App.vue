@@ -1,8 +1,10 @@
 <template lang="pug">
   div#app
     page-header
-    contacts
-    messages
+
+    div#wrapper
+      contacts
+      messages
   </div>
 </template>
 
@@ -23,16 +25,26 @@ export default {
 
 <style lang="sass">
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700')
+@import ../src/sass/variables
 
 body
-  font-family: 'Open Sans', sans-serif
+  margin: 0
 
-#contacts
-  float: left
-  width: 30%
+  #app
+    color: $primary
+    font-family: 'Open Sans', sans-serif
+    padding: 1em
 
-#messages
-  float: left
-  width: 70%
+    #wrapper
+      clear: both
+      border: 1px solid $primary-light
+      overflow: hidden
 
+      #contacts
+        float: left
+        width: 20%
+
+      #messages
+        float: left
+        width: calc(80% - 1px)
 </style>

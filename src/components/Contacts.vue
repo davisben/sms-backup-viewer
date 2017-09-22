@@ -1,9 +1,14 @@
 <template lang="pug">
-  div#contacts Contacts
+  contact
 </template>
 
 <script>
+import Contact from './Contact'
+
 export default {
-  name: 'contacts'
+  name: 'contacts',
+  components: {
+    Contact
+  }
 }
 </script>
