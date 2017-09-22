@@ -48,11 +48,13 @@ export default {
               var contact = {
                 address: sms.$.address,
                 name: sms.$.contact_name,
-                count: 1
+                count: 1,
+                latest: sms.$.date
               }
               contacts.push(contact)
             } else {
               contacts[index].count++
+              contacts[index].latest = sms.$.date
             }
 
             var message = {
@@ -93,7 +95,7 @@ export default {
             }
           })
 
-          app.contacts = contacts
+          app.contacts = _.reverse(_.sortBy(contacts, ['latest']))
           app.messages = messages
         })
       }
