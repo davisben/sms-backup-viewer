@@ -1,9 +1,14 @@
 <template lang="pug">
-  div#messages Messages
+  message
 </template>
 
 <script>
+import Message from './Message'
+
 export default {
-  name: 'messages'
+  name: 'messages',
+  components: {
+    Message
+  }
 }
 </script>

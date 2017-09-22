@@ -10,10 +10,14 @@
 <script>
 export default {
   name: 'contact',
-  store: ['contacts'],
+  store: ['contacts', 'messages', 'loadedMessages'],
   methods: {
     contactClick: function (address, e) {
       this.active = address
+
+      this.loadedMessages = this.messages.filter(function (message) {
+        return message.address === this.toString()
+      }, address)
     }
   },
   data () {

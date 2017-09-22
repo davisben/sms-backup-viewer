@@ -31,8 +31,10 @@ export default {
           }
 
           var contacts = []
+          var messages = []
 
           _.forEach(result.smses.sms, function (sms) {
+            console.log(sms)
             var address = sms.$.address
             var index = _.findIndex(contacts, ['address', address])
 
@@ -46,9 +48,18 @@ export default {
             } else {
               contacts[index].count++
             }
+
+            var message = {
+              address: address,
+              date: sms.$.date,
+              type: sms.$.type,
+              body: sms.$.body
+            }
+            messages.push(message)
           })
 
           app.contacts = contacts
+          app.messages = messages
         })
       }
       reader.readAsText(files[0])
