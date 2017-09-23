@@ -70,6 +70,22 @@ export default {
             if (!_.isEmpty(mms.parts)) {
               _.forEach(mms.parts, function (part) {
                 if (!_.isEmpty(part)) {
+                  var address = mms.$.address
+                  var index = _.findIndex(contacts, ['address', address])
+
+                  if (index === -1) {
+                    var contact = {
+                      address: mms.$.address,
+                      name: mms.$.contact_name,
+                      count: 1,
+                      latest: mms.$.date
+                    }
+                    contacts.push(contact)
+                  } else {
+                    contacts[index].count++
+                    contacts[index].latest = mms.$.date
+                  }
+
                   var images = []
                   var body
 
