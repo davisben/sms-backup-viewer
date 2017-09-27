@@ -48,7 +48,7 @@ export default {
           msg = {
             address: address,
             date: message.attr.date,
-            type: 1,
+            type: message.attr.rr === '128' ? 1 : 2,
             body: body,
             images: images
           }
