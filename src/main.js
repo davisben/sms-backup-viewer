@@ -11,9 +11,9 @@ new Vue({
   el: '#app',
   data: {
     store: {
-      contacts: '',
-      messages: '',
-      loadedMessages: ''
+      xmlData: [],
+      contacts: [],
+      messages: []
     }
   },
   render: h => h(App)

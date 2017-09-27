@@ -1,6 +1,6 @@
 <template lang="pug">
   div#messages
-    div.message(v-for="message in loadedMessages"
+    div.message(v-for="message in messages"
       :class="message.type == 1 ? 'received' : 'sent'")
 
       img(v-for="image in message.images", :src="image")
@@ -10,7 +10,7 @@
 <script>
 export default {
   name: 'messages',
-  store: ['loadedMessages']
+  store: ['messages']
 }
 </script>
 

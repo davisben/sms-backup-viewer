@@ -12,16 +12,59 @@ import _ from 'lodash'
 
 export default {
   name: 'contact',
-  store: ['contacts', 'messages', 'loadedMessages'],
+  store: ['xmlData', 'contacts', 'messages'],
   methods: {
     contactClick: function (address, e) {
+      var app = this
       this.active = address
+      this.messages = []
 
-      var filtered = this.messages.filter(function (message) {
-        return message.address === this.toString()
-      }, address)
+      var imageMimeTypes = [
+        'image/jpeg',
+        'image/jpg',
+        'image/png',
+        'image/gif'
+      ]
 
-      this.loadedMessages = _.sortBy(filtered, ['date'])
+      var messages = _.filter(this.xmlData, function (m) {
+        return m.attr.address === address
+      })
+
+      var msg = {}
+      _.forEach(messages, function (message) {
+        if (_.has(message, 'parts')) {
+          var images = []
+          var body
+
+          _.forEach(message.parts.part, function (part) {
+            var type = part.attr.ct
+            if (_.indexOf(imageMimeTypes, type) >= 0) {
+              var src = 'data:' + type + ';base64, ' + part.attr.data
+              images.push(src)
+            } else if (type === 'text/plain') {
+              body = part.attr.text
+            }
+          })
+          msg = {
+            address: address,
+            date: message.attr.date,
+            type: 1,
+            body: body,
+            images: images
+          }
+        } else {
+          msg = {
+            address: address,
+            date: message.attr.date,
+            type: message.attr.type,
+            body: message.attr.body
+          }
+        }
+
+        app.messages.push(msg)
+      })
+
+      this.messages = _.sortBy(this.messages, ['date'])
     }
   },
   data () {
