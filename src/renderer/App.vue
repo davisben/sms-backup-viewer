@@ -9,9 +9,9 @@
 </template>
 
 <script>
-import PageHeader from './components/PageHeader'
-import Contacts from './components/Contacts'
-import Messages from './components/Messages'
+import PageHeader from '@/components/PageHeader'
+import Contacts from '@/components/Contacts'
+import Messages from '@/components/Messages'
 
 export default {
   name: 'app',
@@ -25,7 +25,6 @@ export default {
 
 <style lang="sass">
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700')
-@import ../src/sass/variables
 
 body
   margin: 0

@@ -1,7 +1,7 @@
 <template lang="pug">
   div#messages
     div.message(v-for="message in messages"
-      :class="message.type == 1 ? 'received' : 'sent'")
+      :class="[message.type == 1 ? 'received' : 'sent', 'bg-' + message.color + '-500']")
 
       img(v-for="image in message.images", :src="image")
       div.body {{ message.body }}
@@ -15,8 +15,6 @@ export default {
 </script>
 
 <style lang="sass">
-@import ../../src/sass/variables
-
 #messages
   .message
     clear: both
@@ -28,11 +26,9 @@ export default {
 
     &.received
       float: left
-      background: $received
 
     &.sent
       float: right
-      background: $sent
 
     img
       max-width: 100%

@@ -37,12 +37,16 @@ export default {
           var body
 
           _.forEach(message.parts.part, function (part) {
-            var type = part.attr.ct
+            if (part.attr !== undefined) {
+              part = part.attr
+            }
+
+            var type = part.ct
             if (_.indexOf(imageMimeTypes, type) >= 0) {
-              var src = 'data:' + type + ';base64, ' + part.attr.data
+              var src = 'data:' + type + ';base64, ' + part.data
               images.push(src)
             } else if (type === 'text/plain') {
-              body = part.attr.text
+              body = part.text
             }
           })
           msg = {
@@ -76,8 +80,6 @@ export default {
 </script>
 
 <style lang="sass">
-@import ../../src/sass/variables
-
 #contacts
   .contact
     border-right: 1px solid $primary-light

@@ -8,6 +8,7 @@
 
 <script>
 import fastXmlParser from 'fast-xml-parser'
+import PhoneNumber from 'awesome-phonenumber'
 import _ from 'lodash'
 
 export default {
@@ -39,8 +40,18 @@ export default {
         var messages = smses.concat(mmses)
         app.xmlData = messages
 
+        var colors = [
+          'red',
+          'pink',
+          'purple',
+          'indigo',
+          'teal',
+          'blue-grey'
+        ]
+
         _.forEach(messages, function (message) {
           var address = message.attr.address
+          // var address = app.normalizeAddress(message.attr.address)
           var index = _.findIndex(contacts, ['address', address])
 
           if (index === -1) {
@@ -48,7 +59,8 @@ export default {
               address: address,
               name: message.attr.contact_name,
               count: 1,
-              latest: message.attr.date
+              latest: message.attr.date,
+              color: colors[Math.floor(Math.random() * colors.length)]
             }
             contacts.push(contact)
           } else {
@@ -60,14 +72,22 @@ export default {
         app.contacts = _.reverse(_.sortBy(contacts, ['latest']))
       }
       reader.readAsText(files[0])
+    },
+    normalizeAddress: function (address, e) {
+      var pn = PhoneNumber(address, 'US')
+      var number = pn.getNumber('e164')
+
+      if (number === undefined) {
+        number = address
+      }
+
+      return number
     }
   }
 }
 </script>
 
 <style lang="sass">
-@import ../../src/sass/variables
-
 h1
   float: left
   color: $primary-dark
