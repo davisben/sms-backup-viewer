@@ -7,71 +7,64 @@
 </template>
 
 <script>
-import fastXmlParser from 'fast-xml-parser'
+import bigXml from 'big-xml'
 import PhoneNumber from 'awesome-phonenumber'
 import _ from 'lodash'
 
 export default {
   name: 'page-header',
-  store: ['xmlData', 'contacts'],
+  store: ['data', 'contacts'],
   methods: {
     onFileChange (e) {
-      var app = this
       var files = e.target.files || e.dataTransfer.files
-
       if (!files.length) {
         return
       }
 
-      var reader = new FileReader()
-      reader.onload = function (e) {
-        var contacts = []
+      var filePath = files[0].path
+      this.parseData(filePath)
+    },
+    parseData: function (filePath, e) {
+      var messages = []
+      var contacts = []
+      var app = this
 
-        var options = {
-          attrPrefix: '',
-          attrNodeName: 'attr',
-          ignoreNonTextNodeAttr: false,
-          ignoreTextNodeAttr: false
-        }
-        var xmlData = fastXmlParser.parse(e.target.result, options)
-
-        var smses = xmlData.smses.sms
-        var mmses = xmlData.smses.mms
-        var messages = smses.concat(mmses)
-        app.xmlData = messages
-
-        var colors = [
-          'red',
-          'pink',
-          'purple',
-          'indigo',
-          'teal',
-          'blue-grey'
-        ]
-
-        _.forEach(messages, function (message) {
-          var address = message.attr.address
-          // var address = app.normalizeAddress(message.attr.address)
-          var index = _.findIndex(contacts, ['address', address])
-
-          if (index === -1) {
-            var contact = {
-              address: address,
-              name: message.attr.contact_name,
-              count: 1,
-              latest: message.attr.date,
-              color: colors[Math.floor(Math.random() * colors.length)]
-            }
-            contacts.push(contact)
-          } else {
-            contacts[index].count++
-            contacts[index].latest = message.attr.date
-          }
+      bigXml.createReader(filePath, /^(sms|mms)$/)
+        .on('record', function (record) {
+          messages.push(record)
         })
+        .on('end', function () {
+          var colors = [
+            'red',
+            'pink',
+            'purple',
+            'indigo',
+            'teal',
+            'blue-grey'
+          ]
 
-        app.contacts = _.reverse(_.sortBy(contacts, ['latest']))
-      }
-      reader.readAsText(files[0])
+          _.forEach(messages, function (message) {
+            var address = app.normalizeAddress(message.attrs.address)
+            var index = _.findIndex(contacts, ['address', address])
+
+            if (index === -1) {
+              var contact = {
+                address: address,
+                name: message.attrs.contact_name,
+                count: 1,
+                latest: message.attrs.date,
+                color: colors[Math.floor(Math.random() * colors.length)]
+              }
+              contacts.push(contact)
+            } else {
+              contacts[index].count++
+              contacts[index].latest = message.attrs.date
+            }
+          })
+
+          app.contacts = _.reverse(_.sortBy(contacts, ['latest']))
+          app.data = messages
+        })
     },
     normalizeAddress: function (address, e) {
       var pn = PhoneNumber(address, 'US')

@@ -15,7 +15,7 @@ new Vue({
   template: '<App/>',
   data: {
     store: {
-      xmlData: [],
+      data: [],
       contacts: [],
       messages: []
     }

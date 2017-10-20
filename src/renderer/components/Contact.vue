@@ -12,7 +12,7 @@ import _ from 'lodash'
 
 export default {
   name: 'contact',
-  store: ['xmlData', 'contacts', 'messages'],
+  store: ['data', 'contacts', 'messages'],
   methods: {
     contactClick: function (address, e) {
       var app = this
@@ -26,42 +26,40 @@ export default {
         'image/gif'
       ]
 
-      var messages = _.filter(this.xmlData, function (m) {
-        return m.attr.address === address
+      var messages = _.filter(this.data, function (m) {
+        return m.attrs.address === address
       })
 
       var msg = {}
       _.forEach(messages, function (message) {
-        if (_.has(message, 'parts')) {
+        if (message.children === undefined) {
+          msg = {
+            address: address,
+            date: message.attrs.date,
+            type: message.attrs.type,
+            body: message.attrs.body
+          }
+        } else {
           var images = []
           var body
 
-          _.forEach(message.parts.part, function (part) {
-            if (part.attr !== undefined) {
-              part = part.attr
-            }
-
-            var type = part.ct
-            if (_.indexOf(imageMimeTypes, type) >= 0) {
-              var src = 'data:' + type + ';base64, ' + part.data
-              images.push(src)
-            } else if (type === 'text/plain') {
-              body = part.text
-            }
+          _.forEach(message.children, function (child) {
+            _.forEach(child.children, function (part) {
+              var type = part.attrs.ct
+              if (_.indexOf(imageMimeTypes, type) >= 0) {
+                var src = 'data:' + type + ';base64, ' + part.attrs.data
+                images.push(src)
+              } else if (type === 'text/plain') {
+                body = part.attrs.text
+              }
+            })
           })
           msg = {
             address: address,
-            date: message.attr.date,
-            type: message.attr.rr === '128' ? 1 : 2,
+            date: message.attrs.date,
+            type: message.attrs.rr === '128' ? 1 : 2,
             body: body,
             images: images
-          }
-        } else {
-          msg = {
-            address: address,
-            date: message.attr.date,
-            type: message.attr.type,
-            body: message.attr.body
           }
         }
 
