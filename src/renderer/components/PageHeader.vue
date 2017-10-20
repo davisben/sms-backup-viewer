@@ -34,15 +34,6 @@ export default {
           messages.push(record)
         })
         .on('end', function () {
-          var colors = [
-            'red',
-            'pink',
-            'purple',
-            'indigo',
-            'teal',
-            'blue-grey'
-          ]
-
           _.forEach(messages, function (message) {
             var address = app.normalizeAddress(message.attrs.address)
             var index = _.findIndex(contacts, ['address', address])
@@ -53,7 +44,7 @@ export default {
                 name: message.attrs.contact_name,
                 count: 1,
                 latest: message.attrs.date,
-                color: colors[Math.floor(Math.random() * colors.length)]
+                color: app.randomColor()
               }
               contacts.push(contact)
             } else {
@@ -75,6 +66,10 @@ export default {
       }
 
       return number
+    },
+    randomColor: function () {
+      var key = Math.floor(Math.random() * this.$colors.length)
+      return this.$colors[key]
     }
   }
 }

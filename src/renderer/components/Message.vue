@@ -15,6 +15,8 @@ export default {
 </script>
 
 <style lang="sass">
+@import ../../../node_modules/material-colors/dist/colors.css
+
 #messages
   .message
     clear: both
@@ -26,6 +28,7 @@ export default {
 
     &.received
       float: left
+      color: #fff
 
     &.sent
       float: right

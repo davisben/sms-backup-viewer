@@ -19,24 +19,20 @@ export default {
       this.active = address
       this.messages = []
 
-      var imageMimeTypes = [
-        'image/jpeg',
-        'image/jpg',
-        'image/png',
-        'image/gif'
-      ]
-
       var messages = _.filter(this.data, function (m) {
         return m.attrs.address === address
       })
 
       var msg = {}
       _.forEach(messages, function (message) {
+        var contact = app.getContact(message.attrs.address)
+
         if (message.children === undefined) {
           msg = {
             address: address,
             date: message.attrs.date,
             type: message.attrs.type,
+            color: message.attrs.type === '1' ? contact.color : 'amber',
             body: message.attrs.body
           }
         } else {
@@ -46,7 +42,7 @@ export default {
           _.forEach(message.children, function (child) {
             _.forEach(child.children, function (part) {
               var type = part.attrs.ct
-              if (_.indexOf(imageMimeTypes, type) >= 0) {
+              if (_.indexOf(app.$imageMimeTypes, type) >= 0) {
                 var src = 'data:' + type + ';base64, ' + part.attrs.data
                 images.push(src)
               } else if (type === 'text/plain') {
@@ -58,6 +54,7 @@ export default {
             address: address,
             date: message.attrs.date,
             type: message.attrs.rr === '128' ? 1 : 2,
+            color: message.attrs.rr === '128' ? contact.color : 'amber',
             body: body,
             images: images
           }
@@ -67,6 +64,12 @@ export default {
       })
 
       this.messages = _.sortBy(this.messages, ['date'])
+    },
+    getContact: function (address) {
+      var contact = _.filter(this.contacts, function (c) {
+        return c.address === address
+      })
+      return contact[0]
     }
   },
   data () {
