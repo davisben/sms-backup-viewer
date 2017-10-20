@@ -8,7 +8,6 @@
 
 <script>
 import bigXml from 'big-xml'
-import PhoneNumber from 'awesome-phonenumber'
 import _ from 'lodash'
 
 export default {
@@ -35,7 +34,7 @@ export default {
         })
         .on('end', function () {
           _.forEach(messages, function (message) {
-            var address = app.normalizeAddress(message.attrs.address)
+            var address = app.$normalizeAddress(message.attrs.address)
             var index = _.findIndex(contacts, ['address', address])
 
             if (index === -1) {
@@ -56,16 +55,6 @@ export default {
           app.contacts = _.reverse(_.sortBy(contacts, ['latest']))
           app.data = messages
         })
-    },
-    normalizeAddress: function (address, e) {
-      var pn = PhoneNumber(address, 'US')
-      var number = pn.getNumber('e164')
-
-      if (number === undefined) {
-        number = address
-      }
-
-      return number
     },
     randomColor: function () {
       var key = Math.floor(Math.random() * this.$colors.length)

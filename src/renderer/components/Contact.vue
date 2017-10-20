@@ -36,25 +36,35 @@ export default {
             body: message.attrs.body
           }
         } else {
+          var sender
           var images = []
           var body
 
           _.forEach(message.children, function (child) {
-            _.forEach(child.children, function (part) {
-              var type = part.attrs.ct
-              if (_.indexOf(app.$imageMimeTypes, type) >= 0) {
-                var src = 'data:' + type + ';base64, ' + part.attrs.data
-                images.push(src)
-              } else if (type === 'text/plain') {
-                body = part.attrs.text
-              }
-            })
+            if (child.tag === 'parts') {
+              _.forEach(child.children, function (part) {
+                var type = part.attrs.ct
+                if (_.indexOf(app.$imageMimeTypes, type) >= 0) {
+                  var src = 'data:' + type + ';base64, ' + part.attrs.data
+                  images.push(src)
+                } else if (type === 'text/plain') {
+                  body = part.attrs.text
+                }
+              })
+            } else if (child.tag === 'addrs') {
+              _.forEach(child.children, function (addr) {
+                if (addr.attrs.type === '137') {
+                  sender = app.$normalizeAddress(addr.attrs.address)
+                }
+              })
+            }
           })
+
           msg = {
             address: address,
             date: message.attrs.date,
-            type: message.attrs.rr === '128' ? 1 : 2,
-            color: message.attrs.rr === '128' ? contact.color : 'amber',
+            type: sender === address ? '2' : '1',
+            color: sender === address ? 'amber' : contact.color,
             body: body,
             images: images
           }
