@@ -36,6 +36,7 @@ export default {
             body: message.attrs.body
           }
         } else {
+          var type
           var sender
           var images = []
           var body
@@ -43,7 +44,7 @@ export default {
           _.forEach(message.children, function (child) {
             if (child.tag === 'parts') {
               _.forEach(child.children, function (part) {
-                var type = part.attrs.ct
+                type = part.attrs.ct
                 if (_.indexOf(app.$imageMimeTypes, type) >= 0) {
                   var src = 'data:' + type + ';base64, ' + part.attrs.data
                   images.push(src)
@@ -54,7 +55,19 @@ export default {
             } else if (child.tag === 'addrs') {
               _.forEach(child.children, function (addr) {
                 if (addr.attrs.type === '137') {
-                  sender = app.$normalizeAddress(addr.attrs.address)
+                  if (address.includes(addr.attrs.address)) {
+                    type = '1'
+                    var normalizedAddress = app.$normalizeAddress(addr.attrs.address)
+                    sender = app.getContact(normalizedAddress)
+                    if (sender === undefined) {
+                      sender = {
+                        address: normalizedAddress,
+                        color: app.$randomColor()
+                      }
+                    }
+                  } else {
+                    type = '2'
+                  }
                 }
               })
             }
@@ -63,8 +76,8 @@ export default {
           msg = {
             address: address,
             date: message.attrs.date,
-            type: sender === address ? '2' : '1',
-            color: sender === address ? 'amber' : contact.color,
+            type: type,
+            color: type === '1' ? sender.color : 'amber',
             body: body,
             images: images
           }

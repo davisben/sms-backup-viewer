@@ -43,7 +43,7 @@ export default {
                 name: message.attrs.contact_name,
                 count: 1,
                 latest: message.attrs.date,
-                color: app.randomColor()
+                color: app.$randomColor()
               }
               contacts.push(contact)
             } else {
@@ -55,10 +55,6 @@ export default {
           app.contacts = _.reverse(_.sortBy(contacts, ['latest']))
           app.data = messages
         })
-    },
-    randomColor: function () {
-      var key = Math.floor(Math.random() * this.$colors.length)
-      return this.$colors[key]
     }
   }
 }

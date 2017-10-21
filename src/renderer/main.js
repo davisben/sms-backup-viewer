@@ -10,21 +10,26 @@ Vue.config.productionTip = false
 Vue.use(VueStash)
 Vue.use(Vue2Filters)
 
-Vue.prototype.$colors = [
-  'red',
-  'pink',
-  'purple',
-  'indigo',
-  'teal',
-  'blue-grey'
-]
-
 Vue.prototype.$imageMimeTypes = [
   'image/jpeg',
   'image/jpg',
   'image/png',
   'image/gif'
 ]
+
+Vue.prototype.$randomColor = function () {
+  var colors = [
+    'red',
+    'pink',
+    'purple',
+    'indigo',
+    'teal',
+    'blue-grey'
+  ]
+  var key = Math.floor(Math.random() * colors.length)
+
+  return colors[key]
+}
 
 Vue.prototype.$normalizeAddress = function (address) {
   var pn = PhoneNumber(address, 'US')
